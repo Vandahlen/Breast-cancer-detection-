@@ -1,4 +1,4 @@
-# Breast Cancer Detection Pipeline 🔬
+# Breast Cancer Detection Pipeline
 
 An end-to-end, production-ready machine learning pipeline that classifies breast tumors as Benign or Malignant. 
 
