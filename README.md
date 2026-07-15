@@ -21,7 +21,7 @@ To reflect this real-world constraint, this pipeline is strictly optimized for *
 3. **Hyperparameter Tuning:** Utilizes `GridSearchCV` with Stratified K-Fold cross-validation.
 4. **Standardized Logging:** Replaces standard print statements with a configured `logging` module for production-readiness.
 
-## 🚀 How to Run Locally
+## How to Run Locally
 
 **1. Clone the repository:**
 ```bash
