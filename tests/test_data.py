@@ -50,6 +50,13 @@ def test_validate_data_rejects_bad_target():
         validate_data(df)
 
 
+def test_validate_data_rejects_float_target():
+    df = _good_df()
+    df["target"] = df["target"].astype(float)
+    with pytest.raises(ValueError, match="Target column"):
+        validate_data(df)
+
+
 def test_summarize_data_returns_expected_keys():
     summary = summarize_data(_good_df())
     assert set(summary.keys()) == {"class_counts", "feature_stats", "top_correlations"}
