@@ -64,6 +64,7 @@ def build_and_tune_model(X_train: pd.DataFrame, y_train: pd.Series, random_state
         random_state=random_state,
         n_jobs=-1,
         verbose=1,
+        min_resources=45,
     )
 
     logger.info("Starting HalvingGridSearchCV hyperparameter tuning (F2-scored)...")

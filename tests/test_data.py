@@ -36,6 +36,14 @@ def test_validate_data_rejects_duplicate_rows():
         validate_data(df)
 
 
+def test_validate_data_rejects_non_numeric_feature():
+    df = _good_df()
+    df["mean radius"] = df["mean radius"].astype(object)
+    df.loc[0, "mean radius"] = "not-a-number"
+    with pytest.raises(ValueError, match="must be numeric"):
+        validate_data(df)
+
+
 def test_validate_data_rejects_negative_values():
     df = _good_df()
     df.loc[0, "mean radius"] = -1.0

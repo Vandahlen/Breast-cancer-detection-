@@ -25,10 +25,12 @@ def _fig_to_base64(fig) -> str:
     return base64.b64encode(buffer.read()).decode("utf-8")
 
 
-def _plot_class_balance(df: pd.DataFrame) -> str:
+def _plot_class_balance(class_counts: Dict[str, int]) -> str:
     fig, ax = plt.subplots(figsize=(4.5, 4))
-    counts = df["target"].map({0: "Benign", 1: "Malignant"}).value_counts()
-    ax.bar(counts.index, counts.values, color=["#2a9d8f", "#e76f51"])
+    labels = list(class_counts.keys())
+    values = [class_counts[label] for label in labels]
+    colors = {"Benign": "#2a9d8f", "Malignant": "#e76f51"}
+    ax.bar(labels, values, color=[colors[label] for label in labels])
     ax.set_title("Class Balance")
     ax.set_ylabel("Sample Count")
     return _fig_to_base64(fig)
@@ -152,7 +154,7 @@ def generate_report(
     candidates_evaluated: int,
     output_path: Path,
 ) -> Path:
-    class_balance_img = _plot_class_balance(df)
+    class_balance_img = _plot_class_balance(data_summary["class_counts"])
     cm_img = _plot_confusion_matrix(y_test, y_pred)
     pr_img = _plot_precision_recall(y_test, y_proba)
     roc_img = _plot_roc_curve(y_test, y_proba)
