@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+breast_cancer_report.html
+breast_cancer_pipeline.joblib
+breast_cancer_evaluation.png
+.pytest_cache/
