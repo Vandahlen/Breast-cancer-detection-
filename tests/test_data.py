@@ -65,10 +65,24 @@ def test_validate_data_rejects_float_target():
         validate_data(df)
 
 
+def _varied_df():
+    n = 6
+    data = {
+        col: [(i * (idx + 1)) % 7 + i * 0.37 for i in range(n)]
+        for idx, col in enumerate(c for c in EXPECTED_COLUMNS if c != "target")
+    }
+    data["target"] = [0, 1, 0, 1, 0, 1]
+    return pd.DataFrame(data)
+
+
 def test_summarize_data_returns_expected_keys():
-    summary = summarize_data(_good_df())
+    summary = summarize_data(_varied_df())
     assert set(summary.keys()) == {"class_counts", "feature_stats", "top_correlations"}
-    assert summary["class_counts"] == {"Benign": 3, "Malignant": 2} or summary["class_counts"] == {"Malignant": 2, "Benign": 3}
-    assert len(summary["top_correlations"]) <= 5
+    assert dict(summary["class_counts"]) == {"Benign": 3, "Malignant": 3}
+    assert 0 < len(summary["top_correlations"]) <= 5
+    seen_pairs = set()
     for pair in summary["top_correlations"]:
         assert set(pair.keys()) == {"feature_a", "feature_b", "correlation"}
+        pair_key = tuple(sorted((pair["feature_a"], pair["feature_b"])))
+        assert pair_key not in seen_pairs, "top_correlations must not contain a mirrored duplicate pair"
+        seen_pairs.add(pair_key)

@@ -174,14 +174,15 @@ def generate_report(
     <h1>Breast Cancer Detection Report</h1>
     <div class="meta">
         Generated {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} &middot;
-        {df.shape[0]} total samples &middot; {X_test.shape[0]} test samples
+        {df.shape[0]} total samples &middot;
+        {df.shape[0] - X_test.shape[0]} train samples &middot; {X_test.shape[0]} test samples
     </div>
 
     <h2>Model Performance</h2>
     {_metrics_table_html(metrics)}
 
     <h2>Dataset Overview</h2>
-    <div class="charts"><img src="data:image/png;base64,{class_balance_img}" alt="Class balance"></div>
+    <div class="charts"><img src="data:image/png;base64,{class_balance_img}" alt="Class Balance"></div>
     <h3>Most Correlated Feature Pairs</h3>
     {_correlations_table_html(data_summary["top_correlations"])}
 
@@ -193,7 +194,7 @@ def generate_report(
     </div>
 
     <h2>Feature Importance</h2>
-    <div class="charts"><img src="data:image/png;base64,{importance_img}" alt="Feature importance"></div>
+    <div class="charts"><img src="data:image/png;base64,{importance_img}" alt="Feature Importance"></div>
 
     <h2>Best Hyperparameters</h2>
     <div class="params">

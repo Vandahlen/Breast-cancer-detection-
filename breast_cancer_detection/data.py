@@ -39,6 +39,9 @@ def validate_data(df: pd.DataFrame) -> None:
     if (df[feature_cols] < 0).any().any():
         raise ValueError("Feature columns must not contain negative values")
 
+    if (df[feature_cols] > 1e6).any().any():
+        raise ValueError("Feature columns must not contain unreasonably large values (> 1e6)")
+
     if not pd.api.types.is_integer_dtype(df["target"]) or not df["target"].isin([0, 1]).all():
         raise ValueError("Target column must only contain 0 (Benign) or 1 (Malignant)")
 
@@ -73,6 +76,9 @@ def summarize_data(df: pd.DataFrame) -> dict:
 
 
 def load_data(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        raise FileNotFoundError(f"Dataset not found at {path}. Check --data-path.")
+
     df = pd.read_csv(path)
     validate_data(df)
 

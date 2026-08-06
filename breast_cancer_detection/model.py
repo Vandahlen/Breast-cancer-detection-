@@ -8,11 +8,11 @@ from sklearn.experimental import enable_halving_search_cv  # noqa: F401  (regist
 from sklearn.inspection import permutation_importance
 from sklearn.metrics import (
     accuracy_score,
+    f1_score,
     fbeta_score,
     make_scorer,
     precision_score,
     recall_score,
-    f1_score,
     roc_auc_score,
 )
 from sklearn.model_selection import HalvingGridSearchCV, StratifiedKFold
@@ -24,8 +24,10 @@ logger = logging.getLogger(__name__)
 
 
 def compute_class_imbalance_ratio(y: pd.Series) -> float:
-    neg_count, pos_count = np.bincount(y)
-    return neg_count / pos_count
+    counts = np.bincount(y)
+    if len(counts) < 2 or counts[1] == 0:
+        raise ValueError(f"Expected both classes (0 and 1) present in y, got counts: {counts}")
+    return counts[0] / counts[1]
 
 
 def make_f2_scorer():
@@ -92,7 +94,7 @@ def evaluate_model(model: Pipeline, X_test: pd.DataFrame, y_test: pd.Series, ran
     logger.info(f"Test Set Metrics:\n{json.dumps(metrics, indent=4)}")
 
     importance = permutation_importance(
-        model, X_test, y_test, n_repeats=10, random_state=random_state, n_jobs=-1
+        model, X_test, y_test, scoring=make_f2_scorer(), n_repeats=10, random_state=random_state, n_jobs=-1
     )
     feature_importance = pd.Series(
         importance.importances_mean, index=X_test.columns
